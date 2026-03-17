@@ -87,6 +87,9 @@ pip_quiet onnx onnxruntime-gpu
 # supervision: bbox/mask post-processing (used in SAMhera utils)
 pip_quiet groundingdino-py supervision
 
+# google-genai: required by SAMhera VLMImageTest node
+pip_quiet google-genai
+
 green "Python packages ready"
 
 # ── 3. ComfyUI ───────────────────────────────────────────────
