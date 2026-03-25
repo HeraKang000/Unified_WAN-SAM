@@ -39,9 +39,14 @@ clone_or_update() {
     local DIR="$CUSTOM_NODES/$NAME"
     if [ ! -d "$DIR/.git" ]; then
         echo "  Cloning $NAME..."
-        git clone --depth 1 "$URL" "$DIR"
-        [ -f "$DIR/requirements.txt" ] && pip_quiet -r "$DIR/requirements.txt"
-        green "$NAME installed"
+        if git clone --depth 1 "$URL" "$DIR"; then
+            # Force checkout in case of untracked file conflicts
+            git -C "$DIR" checkout -f HEAD 2>/dev/null || true
+            [ -f "$DIR/requirements.txt" ] && pip_quiet -r "$DIR/requirements.txt"
+            green "$NAME installed"
+        else
+            red "$NAME clone failed — skipping"
+        fi
     else
         yellow "$NAME exists — pulling"
         git -C "$DIR" pull --ff-only 2>/dev/null || true
