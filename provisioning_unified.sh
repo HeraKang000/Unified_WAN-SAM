@@ -11,7 +11,7 @@
 #
 # SAM nodes:
 #   ComfyUI-SAM3  — PozzettiAndrea base nodes
-#   SAMhera       — HeraKang000 custom (VLM grounding + video tracking)
+#   ComfyUI-AutoVideoMasking — ZeroSpaceStudios custom (VLM grounding + video tracking)
 # ============================================================
 
 set -euo pipefail
@@ -87,12 +87,12 @@ pip_quiet einops omegaconf timm
 pip_quiet "sageattention==1.0.6"
 pip_quiet onnx onnxruntime-gpu
 
-# SAMhera deps
+# ComfyUI-AutoVideoMasking deps
 # groundingdino-py: text-prompted detection backend for SAM3Grounding node
-# supervision: bbox/mask post-processing (used in SAMhera utils)
+# supervision: bbox/mask post-processing (used in AVM utils)
 pip_quiet groundingdino-py supervision
 
-# google-genai: required by SAMhera VLMImageTest node
+# google-genai: required by ComfyUI-AutoVideoMasking VLMImageTest node
 pip_quiet google-genai
 
 green "Python packages ready"
@@ -157,19 +157,19 @@ echo "  -- SAM nodes"
 clone_or_update "ComfyUI-SAM3" \
     "https://github.com/PozzettiAndrea/ComfyUI-SAM3"
 
-# SAMhera: extended nodes
+# ComfyUI-AutoVideoMasking: extended nodes
 #   SAM3Grounding       — text-prompted detection ("person", "shirt")
 #   SAM3VideoInitialize — init stateless video tracking session
 #   SAM3VideoPropagate  — propagate masks across all frames
-clone_or_update "SAMhera" \
-    "https://github.com/HeraKang000/SAMhera"
+clone_or_update "ComfyUI-AutoVideoMasking" \
+    "https://github.com/ZeroSpaceStudios/ComfyUI-AutoVideoMasking"
 
-# Re-run SAMhera requirements even if repo already existed
-SAMHERA_DIR="$CUSTOM_NODES/SAMhera"
+# Re-run ComfyUI-AutoVideoMasking requirements even if repo already existed
+SAMHERA_DIR="$CUSTOM_NODES/ComfyUI-AutoVideoMasking"
 if [ -f "$SAMHERA_DIR/requirements.txt" ]; then
-    echo "  Ensuring SAMhera requirements..."
+    echo "  Ensuring ComfyUI-AutoVideoMasking requirements..."
     pip_quiet -r "$SAMHERA_DIR/requirements.txt"
-    green "SAMhera requirements OK"
+    green "ComfyUI-AutoVideoMasking requirements OK"
 fi
 
 # ComfyUI Manager
@@ -337,7 +337,7 @@ echo "======================================================"
 echo ""
 echo "  SAM nodes:"
 echo "    ComfyUI-SAM3  — LoadSAM3Model, SAM3Segmentation, SAM3MultipromptSegmentation"
-echo "    SAMhera       — SAM3Grounding, SAM3VideoInitialize, SAM3VideoPropagate"
+echo "    ComfyUI-AutoVideoMasking — SAM3Grounding, SAM3VideoInitialize, SAM3VideoPropagate"
 echo ""
 echo "  Models ready for:"
 echo "    VACE MV2V    — SAM3 mask + ref image -> clothing/face swap"
